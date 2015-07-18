@@ -1,0 +1,30 @@
+{
+  "name": "isomagic-pager",
+  "version": "0.0.1",
+  "description": "An IsoMagic extension that creates a simple app",
+  "main": "pager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michaelchance/isomagic-pager"
+  },
+  "keywords": [
+    "isomagic",
+    "isomagic-template",
+    "tlc",
+    "express",
+    "framework",
+    "isomorphic"
+  ],
+  "author": "michael chance",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michaelchance/isomagic-pager/issues"
+  },
+  "homepage": "https://github.com/michaelchance/isomagic-pager",
+  "dependencies": {
+    "cheerio": "^0.19.0"
+  }
+}
