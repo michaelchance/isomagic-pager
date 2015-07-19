@@ -88,7 +88,8 @@
 							//This means that we're in the middle of a page transition- 
 							//let's just hold off for now by halting the middleware chain.
 							}
-						else if(res.$('[data-app-uri="'+req.originalUrl+'"]:not(.'+config.activeClass+')')){
+						else if(res.$('[data-app-uri="'+req.originalUrl+'"]:not(.'+config.activeClass+')').length){
+							// console.log('page is already on the DOM, show it');
 							_app.ext.pager.u.handleTransition(
 								_app.ext.pager.u.activeView(res.$),
 								res.$('[data-app-uri="'+req.originalUrl+'"]')
