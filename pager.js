@@ -40,7 +40,7 @@
 			u : {
 				activeView : function($){
 					return $(config.bodySelector+' [data-app-uri].'+config.activeClass+':not(.'+config.inactiveClass+')');
-					}
+					},
 				handleTransition : function($prev, $next){
 					$prev.addClass(config.inactiveClass);
 					setTimeout(function(){
