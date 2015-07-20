@@ -64,6 +64,7 @@
 						res.tlc.run($view, res.data,{$:res.$});
 						$view.addClass(config.activeClass);
 						res.$(config.bodySelector).append(res.$.html($view));
+						res.$view = $view;
 						}
 					else{
 						$view = $(viewhtml);
@@ -71,6 +72,7 @@
 						res.$(config.bodySelector).append($view);
 						var $prev = _app.ext.pager.u.activeView(res.$);
 						_app.ext.pager.u.handleTransition($prev, $view);
+						res.$view = $view;
 						}
 					
 					// console.log('setting handled true');
