@@ -1,6 +1,6 @@
 {
   "name": "isomagic-pager",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "An IsoMagic extension that creates a simple app",
   "main": "pager.js",
   "scripts": {
