@@ -59,10 +59,10 @@
 					var viewhtml = '<div data-app-uri="'+req.originalUrl+'" data-tlc="bind $var \'.\'; template#translate --templateid=\''+res.templateid+'\' --data=$var; apply --append;"></div>';
 					if(_app.server()){
 						var cheerio = require('cheerio');
-						$view = cheerio.load(viewhtml);
-						res.tlc.run($view, res.data);
-						$view('[data-app-uri]').addClass(config.activeClass);
-						res.$(config.bodySelector).append($view.html());
+						$view = cheerio.load(viewhtml)('[data-app-uri]');
+						res.tlc.run($view, res.data,{$:res.$});
+						$view.addClass(config.activeClass);
+						res.$(config.bodySelector).append(res.$.html($view));
 						}
 					else{
 						$view = $(viewhtml);
