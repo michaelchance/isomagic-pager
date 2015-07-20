@@ -43,9 +43,10 @@
 					},
 				handleTransition : function($prev, $next){
 					$prev.addClass(config.inactiveClass);
+					$next.show();
 					setTimeout(function(){
 						$next.addClass(config.activeClass);
-						$prev.removeClass(config.activeClass+' '+config.inactiveClass);
+						$prev.hide().removeClass(config.activeClass+' '+config.inactiveClass);
 						},config.timeout);
 					}
 				},
