@@ -38,7 +38,24 @@
 		config.inactiveClass = config.inactiveClass || 'inactive';
 		var r = {
 			u : {
-				activeView : function($){
+				refresh : function(){
+					var $activeView = _app.ext.pager.u.activeView();
+					var activeUri = $activeView.attr('data-app-uri');
+					if(typeof uri == 'undefined'){
+						uri = activeUri;
+						}
+					$(config.bodySelector+' [data-app-uri="'+uri+'"]').remove();
+					if(uri == activeUri){
+						console.log(uri);
+						_app.navigate(activeUri,{'skipPush':true, 'pagerRefreshing':true});
+						}
+					},
+				clearInactive : function(){
+					// console.log('clearinactive');
+					var $inactive = $(config.bodySelector+' [data-app-uri]:not(.active), '+config.bodySelector+' [data-app-uri].inactive');
+					$inactive.remove();
+					},
+				activeView : function(){
 					return $(config.bodySelector+' [data-app-uri].'+config.activeClass+':not(.'+config.inactiveClass+')');
 					},
 				handleTransition : function($prev, $next){
@@ -54,56 +71,63 @@
 				},
 			middleware : {
 				showpage : function(req,res,next){
-					// console.log('showpage');
-					res.data = res.data || {};
-					var $view;
-					var viewhtml = '<div data-app-uri="'+req.originalUrl+'" data-tlc="bind $var \'.\'; template#translate --templateid=\''+res.templateid+'\' --data=$var; apply --append;"></div>';
-					if(_app.server()){
-						var cheerio = require('cheerio');
-						$view = cheerio.load(viewhtml)('[data-app-uri]');
-						res.tlc.run($view, res.data,{$:res.$});
-						$view.addClass(config.activeClass);
-						res.$(config.bodySelector).append(res.$.html($view));
-						res.$view = $view;
+					if(res.templateid){
+						console.log('showpage');
+						res.data = res.data || {};
+						var $view;
+						var viewhtml = '<div data-app-uri="'+req.originalUrl+'" data-tlc="bind $var \'.\'; template#translate --templateid=\''+res.templateid+'\' --data=$var --forcesuccess; apply --append;"></div>';
+						if(_app.server()){
+							var cheerio = require('cheerio');
+							$view = cheerio.load(viewhtml)('[data-app-uri]');
+							res.tlc.run($view, res.data,{$:res.$});
+							$view.addClass(config.activeClass);
+							res.$(config.bodySelector).append(res.$.html($view));
+							res.$view = $view;
+							}
+						else{
+							$view = $(viewhtml);
+							res.tlc.run($view, res.data);
+							res.$(config.bodySelector).append($view);
+							var $prev = _app.ext.pager.u.activeView();
+							_app.ext.pager.u.handleTransition($prev, $view);
+							res.$view = $view;
+							}
+						
+						// console.log('setting handled true');
+						res.handled = true;
 						}
-					else{
-						$view = $(viewhtml);
-						res.tlc.run($view, res.data);
-						res.$(config.bodySelector).append($view);
-						var $prev = _app.ext.pager.u.activeView(res.$);
-						_app.ext.pager.u.handleTransition($prev, $view);
-						res.$view = $view;
-						}
-					
-					// console.log('setting handled true');
-					res.handled = true;
 					next();
 					},
 				checkpage : function(req,res,next){
 					// console.log('checkpage');
 					if(!_app.server()){
-						var $currentPage = _app.ext.pager.u.activeView(res.$);
+						var $currentPage = _app.ext.pager.u.activeView();
 						// console.log($currentPage);
 						if($currentPage.length && $currentPage.attr('data-app-uri') == req.originalUrl){
+							console.log('we are already here');
 							//halt the middleware chain.  We're already on this page.
 							}
-						else if(!$currentPage.length){
+						else if(!$currentPage.length && !res.pagerRefreshing){
+							console.log('in the middle of a page transition');
+							console.log(res);
 							//This means that we're in the middle of a page transition- 
 							//let's just hold off for now by halting the middleware chain.
 							}
 						else if(res.$('[data-app-uri="'+req.originalUrl+'"]:not(.'+config.activeClass+')').length){
-							// console.log('page is already on the DOM, show it');
+							console.log('page is already on the DOM, show it');
 							_app.ext.pager.u.handleTransition(
-								_app.ext.pager.u.activeView(res.$),
+								_app.ext.pager.u.activeView(),
 								res.$('[data-app-uri="'+req.originalUrl+'"]')
 								);
-							//TODO trigger client middleware
+							_app.triggerClientRouter(req,res);
 							}
 						else {
+							// console.log('next');
 							next();
 							}
 						}
 					else {
+						// console.log('next');
 						next();
 						}
 					}
