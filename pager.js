@@ -119,6 +119,7 @@
 								_app.ext.pager.u.activeView(),
 								res.$('[data-app-uri="'+req.originalUrl+'"]')
 								);
+							_app.historyPush(req);
 							_app.triggerClientRouter(req,res);
 							}
 						else {
