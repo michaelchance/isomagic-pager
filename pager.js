@@ -47,7 +47,7 @@
 					$(config.bodySelector+' [data-app-uri="'+uri+'"]').remove();
 					if(uri == activeUri){
 						console.log(uri);
-						_app.navigate(activeUri,{'skipPush':true, 'pagerRefreshing':true});
+						_app.navigate(activeUri,{'historyReplace':true, 'pagerRefreshing':true});
 						}
 					},
 				clearInactive : function(){
@@ -105,6 +105,8 @@
 						// console.log($currentPage);
 						if($currentPage.length && $currentPage.attr('data-app-uri') == req.originalUrl){
 							console.log('we are already here');
+							console.log($currentPage.attr('data-app-uri'));
+							console.log(req.originalUrl);
 							//halt the middleware chain.  We're already on this page.
 							}
 						else if(!$currentPage.length && !res.pagerRefreshing){
